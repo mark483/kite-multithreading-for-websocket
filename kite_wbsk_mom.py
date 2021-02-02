@@ -166,7 +166,8 @@ def run_ticker(q):
 
     # Infinite loop on the main thread. Nothing after this will run.
     # You have to use the pre-defined callbacks to manage subscriptions.
-    kws.connect()
+    kws.connect(threaded=True)
+    #what is this?
     q.put(0)
 
 
