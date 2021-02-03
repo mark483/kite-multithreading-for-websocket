@@ -1,0 +1,72 @@
+
+#python3.6 
+apt upgrade &&\
+apt update &&\
+apt install \
+python3.6 \
+python3-dev python3-pip \
+python3-software-properties \
+build-essential libssl-dev libffi-dev \
+libxml2-dev libxslt1-dev zlib1g-dev \
+python3-tk  \
+unzip \
+apt-utils \
+vim \
+wget \
+bzip2 \
+cmake \
+curl \
+git \
+openjdk-11-jdk \
+zip \
+unzip \
+g++ \
+gcc \
+sudo
+
+
+export LC_ALL=C &&\
+# pip system-wide install
+pip3 install setuptools &&\
+pip3 install \
+-U pip \
+-U virtualenv \
+numpy \
+pandas \
+matplotlib \
+seaborn \
+flask \
+datetime \
+tqdm \
+schedule \
+requests \
+scikit-learn \
+scikit-image \
+gensim \
+alpha_vantage \
+wheel \
+six \
+mock 'future>=0.17.1' \
+urllib3 \
+jupyter \
+keras_applications --no-deps \
+keras_preprocessing --no-deps \
+protobuf \
+yfinance \
+docker \
+bayesian-optimization \
+dateutils \
+pytz \
+numpy
+#ta-lib
+
+##ta-lib
+wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+tar -xzf ta-lib-0.4.0-src.tar.gz
+cd ta-lib/
+./configure --prefix=/usr
+make
+make install
+
+
+
