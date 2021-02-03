@@ -36,6 +36,6 @@ class EnvConfig:
         self.VOL_FREQUENCY = int(os.environ.get('VOL_FREQUENCY'))
         self.VOL_MODE = os.environ.get('VOL_MODE')
 
-        # self.BINANCE_API_KEY = os.environ.get('BINANCE_API_KEY')
-        # self.BINANCE_API_SECRET = os.environ.get('BINANCE_API_SECRET')
-        # self.BINANCE_MODEL_PATH = os.environ.get('BINANCE_MODEL_PATH')
+        self.BINANCE_API_KEY = os.environ.get('BINANCE_API_KEY')
+        self.BINANCE_API_SECRET = os.environ.get('BINANCE_API_SECRET')
+        self.BINANCE_MODEL_PATH = os.environ.get('BINANCE_MODEL_PATH')

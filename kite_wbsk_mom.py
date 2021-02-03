@@ -23,6 +23,7 @@ CORR_TIME_IN_SEC = 0
 VOL_TIME_IN_SEC = 0
 EPS = 3
 
+#Muted the URL to send data
 UPDATE_TOKEN_URL = 'http://0.0.0.0:8005/kite/update_token'
 TRADE_URL = 'http://localhost:8005/kite/trade'
 CORR_URL = 'http://localhost:8005/kite/adjust_corr'
