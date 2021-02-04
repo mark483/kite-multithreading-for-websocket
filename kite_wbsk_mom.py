@@ -7,6 +7,7 @@ import pytz
 import requests
 from dotenv import load_dotenv, find_dotenv
 from kiteconnect import KiteTicker
+from kiteconnect import KiteConnect
 
 from config import EnvConfig
 
@@ -22,6 +23,8 @@ CORR_TIME_IN_SEC = 0
 #Added for the volatiltiy
 VOL_TIME_IN_SEC = 0
 EPS = 3
+
+tokens_subset=[]
 
 #Muted the URL to send data
 UPDATE_TOKEN_URL = 'http://0.0.0.0:8005/kite/update_token'
@@ -55,13 +58,8 @@ def is_weekday(d, start=0, end=4):
 
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
+    print('on tick initiated')
     for tick in ticks:
-        token = tick['instrument_token']
-        if token != NSE_SBIN_INSTRUMENT_TOKEN:
-            logging.error('Instrument tokens are not equal: wait {}, get {}'.format(
-                NSE_SBIN_INSTRUMENT_TOKEN, token))
-            # ToDo: refresh it and save in db
-            return
 
         if tick['mode'] == 'full':
             traded_time = tick['last_trade_time']
@@ -140,8 +138,13 @@ def send_data(url, tick):
 
 def on_connect(ws, response):
     # Callback on successful connect.
-    ws.subscribe([NSE_SBIN_INSTRUMENT_TOKEN])
-    ws.set_mode(ws.MODE_FULL, [NSE_SBIN_INSTRUMENT_TOKEN])
+    print('connected')
+    global tokens_subset
+    print(len(tokens_subset))
+    ws.subscribe(tokens_subset)
+    print('subscribed')
+    ws.set_mode(ws.MODE_FULL, tokens_subset)
+    print('mode set for subscription')
 
 
 def on_close(ws, code, reason):
@@ -160,6 +163,18 @@ def run_ticker(q):
 
     # Initialise
     kws = KiteTicker(conf.KITE_API_KEY, access_token)
+    #get list of tokens
+    kite = KiteConnect(api_key=conf.KITE_API_KEY)
+    kite.set_access_token(access_token)
+    print('retrieving tokens list')
+    data=kite.instruments()
+    print('list of tokens retrieved')
+    #retrive instrument tokens from instruments server response
+    tokens = [f['instrument_token'] for f in data]
+    #select only 3000 tokens
+    global tokens_subset
+    tokens_subset=tokens[:3000]
+    ###############################################
     # Assign the callbacks.
     kws.on_ticks = on_ticks
     kws.on_connect = on_connect
