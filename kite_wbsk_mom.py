@@ -1,7 +1,8 @@
 import datetime
 import json
-import logging
 from multiprocessing import Process, Queue
+from queuemap import QueueMap
+from threading import Thread
 
 import pytz
 import requests
@@ -10,8 +11,8 @@ from kiteconnect import KiteTicker
 from kiteconnect import KiteConnect
 
 from config import EnvConfig
-
-logging.basicConfig(level=logging.DEBUG)
+from queuemap import QueueMap
+from setup_logger import logger
 
 
 NSE_SBIN_INSTRUMENT_TOKEN = 779521
@@ -25,6 +26,8 @@ VOL_TIME_IN_SEC = 0
 EPS = 3
 
 tokens_subset=[]
+enclosure_queue = Queue()
+qm=QueueMap(window=1)
 
 #Muted the URL to send data
 UPDATE_TOKEN_URL = 'http://0.0.0.0:8005/kite/update_token'
@@ -41,7 +44,21 @@ MOM1_URL = 'http://localhost:8005/kite/adjust_mom1'
 #Sending data to pnl for trade
 #PNL_URL = 'http://localhost:8005/kite/pnl_trade'
 
-
+def downloadEnclosures(q):
+    """This is the worker thread function.
+    It processes items in the queue one after
+    another.  These daemon threads go into an
+    infinite loop, and only exit when
+    the main thread ends.
+    """
+    while True:
+        
+        tick = q.get()
+        if tick:
+            print ('tick received on worker thread')
+            #print(tick)
+            send_data(tick)
+        
 
 def time_in_range(start, end, x):
     """Return true if x is in the range [start, end]"""
@@ -60,80 +77,21 @@ def on_ticks(ws, ticks):
     # Callback to receive ticks.
     print('on tick initiated')
     for tick in ticks:
-
-        if tick['mode'] == 'full':
-            traded_time = tick['last_trade_time']
-
-            global CLOCK, CORR_CLOCK, VOL_CLOCK
-            # ToDo: add documentation that the method doesn't work with time deltas more than 1 day.
-            # Check if it does.
-
-            now = datetime.datetime.now(tz)
-            stock_is_open = (time_in_range(TRADE_START, TRADE_END, now.time()) and
-                             is_weekday(now))
-
-            if stock_is_open and (traded_time - CORR_CLOCK).seconds > CORR_TIME_IN_SEC - EPS:
-                CORR_CLOCK = traded_time
-                send_data(CORR_URL, tick)
-                
-            ## Added the URL for the corrector_2 or adjust_longterm_2
-            if stock_is_open and (traded_time - CORR_CLOCK).seconds > CORR_TIME_IN_SEC - EPS:
-                CORR_CLOCK = traded_time
-                send_data(CORR_URL_2, tick)
-                
-            ##send data to corrector_stag    
-            if stock_is_open and (traded_time - CORR_CLOCK).seconds > CORR_TIME_IN_SEC - EPS:
-                CORR_CLOCK = traded_time
-                send_data(CORR_URL_STAG, tick)            
-
-            if stock_is_open and (traded_time - CLOCK).seconds > TIME_IN_SEC - EPS:
-                CLOCK = traded_time
-                send_data(TRADE_URL, tick)
-            """
-            ## Send data to  pnl            
-            if stock_is_open and (traded_time - CLOCK).seconds > TIME_IN_SEC - EPS:
-                CLOCK = traded_time
-                send_data(PNL_URL, tick)
-            """   
-            ## Send data to  Volatility   
-            if stock_is_open and (traded_time - VOL_CLOCK).seconds > VOL_TIME_IN_SEC - EPS:
-                VOL_CLOCK = traded_time
-                send_data(VOL_URL, tick)
-                
-            ## send data to volatiltiy_3
-            if stock_is_open and (traded_time - VOL_CLOCK).seconds > VOL_TIME_IN_SEC - EPS:
-                VOL_CLOCK = traded_time
-                send_data(VOL_URL_3, tick)
-                   
-            ## send data to volatiltiy_4
-            if stock_is_open and (traded_time - VOL_CLOCK).seconds > VOL_TIME_IN_SEC - EPS:
-                VOL_CLOCK = traded_time
-                send_data(VOL_URL_4, tick)
-            
-            ## send data to Reversal15
-            if stock_is_open and (traded_time - VOL_CLOCK).seconds > VOL_TIME_IN_SEC - EPS:
-                VOL_CLOCK = traded_time
-                send_data(REV15_URL, tick)
-                 
-            ## send data to Reversal15
-            if stock_is_open and (traded_time - VOL_CLOCK).seconds > VOL_TIME_IN_SEC - EPS:
-                VOL_CLOCK = traded_time
-                send_data(MOM1_URL, tick)
+        #print(tick)
+        enclosure_queue.put(tick)
             
             
 
 
-def send_data(url, tick):
-    traded_time = tick['last_trade_time']
+def send_data(tick):
+    instrument_token = tick['instrument_token']
     traded_price = tick['last_price']
     traded_quantity = tick['last_quantity']
     volume = tick['volume']
-    logging.info(
-        "{}: price - {}, quantity - {}, volume - {}".format(
-            traded_time, traded_price, traded_quantity, volume))
-
-    # ToDo: you should run such requests asynchronously
-    print(requests.get(url + '?data={}'.format([traded_price])).json())
+    qm.set(instrument_token,[traded_price,traded_quantity])
+    qm.check_window()
+    #c=Corrector(window=30)
+    #c.adjust_rocp_factor(tick)
 
 
 def on_connect(ws, response):
@@ -142,8 +100,10 @@ def on_connect(ws, response):
     global tokens_subset
     print(len(tokens_subset))
     ws.subscribe(tokens_subset)
+    #ws.subscribe([NSE_SBIN_INSTRUMENT_TOKEN])
     print('subscribed')
     ws.set_mode(ws.MODE_FULL, tokens_subset)
+    #ws.set_mode(ws.MODE_FULL, [NSE_SBIN_INSTRUMENT_TOKEN])
     print('mode set for subscription')
 
 
@@ -154,7 +114,7 @@ def on_close(ws, code, reason):
 
 
 def on_error(ws, code, error):
-    logging.error(error, code)
+    logger.error(error, code)
 
 
 def run_ticker(q):
@@ -203,6 +163,10 @@ if __name__ == '__main__':
     
     VOL_TIME_IN_SEC = conf.VOL_FREQUENCY 
     VOL_CLOCK = datetime.datetime.now() - datetime.timedelta(seconds=VOL_TIME_IN_SEC)
+
+    worker = Thread(target=downloadEnclosures, args=(enclosure_queue,))
+    worker.setDaemon(True)
+    worker.start()
 
     queue = Queue()
     while True:
