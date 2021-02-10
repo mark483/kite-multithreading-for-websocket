@@ -1,4 +1,5 @@
 import datetime
+import time
 import json
 from multiprocessing import Process, Queue
 from queuemap import QueueMap
@@ -27,7 +28,7 @@ EPS = 3
 
 tokens_subset=[]
 enclosure_queue = Queue()
-qm=QueueMap(window=1)
+qm=QueueMap(window=30)
 
 #Muted the URL to send data
 UPDATE_TOKEN_URL = 'http://0.0.0.0:8005/kite/update_token'
@@ -55,7 +56,7 @@ def downloadEnclosures(q):
         
         tick = q.get()
         if tick:
-            print ('tick received on worker thread')
+            #print ('tick received on worker thread')
             #print(tick)
             send_data(tick)
         
@@ -75,7 +76,7 @@ def is_weekday(d, start=0, end=4):
 
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
-    print('on tick initiated')
+    #print('on tick initiated')
     for tick in ticks:
         #print(tick)
         enclosure_queue.put(tick)
@@ -88,11 +89,9 @@ def send_data(tick):
     traded_price = tick['last_price']
     traded_quantity = tick['last_quantity']
     volume = tick['volume']
-    qm.set(instrument_token,[traded_price,traded_quantity])
+    #print("setting instrument")
+    qm.set(instrument_token,traded_price,traded_quantity)
     qm.check_window()
-    #c=Corrector(window=30)
-    #c.adjust_rocp_factor(tick)
-
 
 def on_connect(ws, response):
     # Callback on successful connect.
