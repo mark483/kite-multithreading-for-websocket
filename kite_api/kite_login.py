@@ -2,6 +2,8 @@ import json
 
 import requests
 from kiteconnect import KiteConnect
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 KITE_LOGIN = 'https://kite.zerodha.com/api/login'
 KITE_CONNECT = 'https://kite.trade/connect/login'
@@ -62,5 +64,6 @@ class KiteLogin:
                        )
 
             resp = s.get(KITE_CONNECT, params={'api_key': self.api_key})
+            logging.info(json.loads(resp.text))
             return json.loads(resp.text)['token']
 

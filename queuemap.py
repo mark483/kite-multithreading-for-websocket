@@ -1,5 +1,4 @@
-from collections import defaultdict
-from time import sleep
+from collections import defaultdict,OrderedDict
 from setup_logger import logger
 import time
 import numpy as np
@@ -53,24 +52,23 @@ class QueueMap(object):
         
 
     def check_window(self):
-        logger.info(time.time() - self.init_time)
+        #logger.info(time.time() - self.init_time)
         if (time.time() - self.init_time) >= self.window :
             logger.info('time started')  
             for key, value in self._store.items():
                 self._store[key].price_sum = self.price_rocp_factor(value.price_list,len(value.price_list))
                 self._store[key].value_average = self.traded_value(value.price_list,value.quantity_list)
                 self._store[key].pop()
-            priceDict= {key: value.value_average for (key, value) in self._store.items() if not math.isnan(value.price_sum)}
-            #logger.info(priceDict)
-            if priceDict:
-                a=sorted(priceDict.items(), reverse=True)[:5]
-                logger.info(a)
-            #logger.info(sorted(self._store.items(), key=lambda name: self._store[name].price_sum, reverse=True)[:5])
             self.init_time=time.time()
             logger.info('timer restarted')
-            #logger.info(type(sorted(self._store, key=lambda name: self._store[name].price_sum, reverse=True)[:5]))
-            #for w in sorted(self._store.items(), key=lambda name: self._store[name].price_sum, reverse=True)[:5]:
-                #logger.info(w, self._store[w])
+            priceDict= {key: value for (key, value) in self._store.items() if not (math.isnan(value.price_sum) or value.value_average==0) }
+            #logger.info(priceDict)
+            if priceDict and len(priceDict)>=10:
+                sorted_priceDict=sorted(priceDict.items(), key=lambda pair: pair[1].value_average, reverse=True)[:10]
+                #logger.info(sorted_priceDict)
+                priceDict = OrderedDict(sorted_priceDict)   
+                return priceDict
+        return None
 
     def price_rocp_factor(self, data,timeperiod) :
         if timeperiod==1:

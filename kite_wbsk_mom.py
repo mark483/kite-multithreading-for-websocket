@@ -14,6 +14,7 @@ from kiteconnect import KiteConnect
 from config import EnvConfig
 from queuemap import QueueMap
 from setup_logger import logger
+import pandas as pd
 
 
 NSE_SBIN_INSTRUMENT_TOKEN = 779521
@@ -43,7 +44,7 @@ VOL_URL_4 = 'http://localhost:8005/kite/adjust_volatility_4'
 REV15_URL = 'http://localhost:8005/kite/adjust_reversal15'
 MOM1_URL = 'http://localhost:8005/kite/adjust_mom1'
 #Sending data to pnl for trade
-#PNL_URL = 'http://localhost:8005/kite/pnl_trade'
+PNL_URL = 'http://localhost:8005/kite/pnl_trade'
 
 def downloadEnclosures(q):
     """This is the worker thread function.
@@ -58,7 +59,7 @@ def downloadEnclosures(q):
         if tick:
             #print ('tick received on worker thread')
             #print(tick)
-            send_data(tick)
+            analyze_data(tick)
         
 
 def time_in_range(start, end, x):
@@ -84,14 +85,36 @@ def on_ticks(ws, ticks):
             
 
 
-def send_data(tick):
+def analyze_data(tick):
     instrument_token = tick['instrument_token']
     traded_price = tick['last_price']
     traded_quantity = tick['last_quantity']
     volume = tick['volume']
     #print("setting instrument")
     qm.set(instrument_token,traded_price,traded_quantity)
-    qm.check_window()
+    priceDict=qm.check_window()
+    if priceDict:
+        priceSeries = pd.Series(priceDict)
+        now = datetime.datetime.now(tz)
+        stock_is_open = (time_in_range(TRADE_START, TRADE_END, now.time()) and
+                             is_weekday(now))
+        if stock_is_open :
+            send_data(CORR_URL, priceSeries.iloc[0])
+            send_data(CORR_URL_2, priceSeries.iloc[1])
+            send_data(CORR_URL_STAG, priceSeries.iloc[2])
+            send_data(TRADE_URL, priceSeries.iloc[3])
+            send_data(PNL_URL, priceSeries.iloc[4])
+            send_data(VOL_URL, priceSeries.iloc[5])
+            send_data(VOL_URL_3, priceSeries.iloc[6])
+            send_data(VOL_URL_4, priceSeries.iloc[7])
+            send_data(REV15_URL, priceSeries.iloc[8])
+            send_data(MOM1_URL, priceSeries.iloc[9])
+
+
+
+def send_data(url, tick):
+    logger.info(url,tick)
+    #print(requests.get(url + '?data={}'.format([traded_price])).json())
 
 def on_connect(ws, response):
     # Callback on successful connect.
