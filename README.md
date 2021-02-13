@@ -184,9 +184,9 @@ Project Link: [https://github.com/mark483/multithreading-for-websocket](https://
 [forks-url]: https://github.com/mark483/repo/network/members
 [stars-shield]: https://img.shields.io/github/stars/mark483/repo.svg?style=for-the-badge
 [stars-url]: https://github.com/mark483/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/mark483/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/mark483/repo/issues
-[license-shield]: https://img.shields.io/github/license/mark483/repo.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
+[issues-url]: https://github.com/mark483/kite-multithreading-for-websocket/issues
+[license-shield]: https://img.shields.io/github/license/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
 [license-url]: https://github.com/mark483/kite-multithreading-for-websocket/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/mark-fouad-yassa
