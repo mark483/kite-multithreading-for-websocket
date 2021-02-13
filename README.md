@@ -1,11 +1,3 @@
-# kite-multithreading-for-websocket
-
-
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** mark483, multithreading-for-websocket, twitter_handle, email, kite-multithreading-for-websocket, project_description
-
-
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -26,18 +18,14 @@
 <br />
 <p align="center">
   <a href="https://github.com/mark483/multithreading-for-websocket">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="kite.png" width="80" height="80">
   </a>
 
-  <h3 align="center">kite-multithreading-for-websocket</h3>
+  <h1 align="center">kite-multithreading-for-websocket</h3>
 
   <p align="center">
-    project_description
+    A multi-threaded kite client using websocket connection
     <br />
-    <a href="https://github.com/mark483/multithreading-for-websocket"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/mark483/multithreading-for-websocket">View Demo</a>
     ·
     <a href="https://github.com/mark483/multithreading-for-websocket/issues">Report Bug</a>
     ·
@@ -53,9 +41,6 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -76,18 +61,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`mark483`, `multithreading-for-websocket`, `twitter_handle`, `email`, `kite-multithreading-for-websocket`, `project_description`
-
-
-### Built With
-
-* []()
-* []()
-* []()
+This is a python client for kite trade using a set of REST-like APIs that expose many capabilities required to build a complete investment and trading platform. Execute orders in real time, stream live market data (WebSockets), and more.
 
 
 
