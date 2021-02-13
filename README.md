@@ -178,12 +178,12 @@ Project Link: [https://github.com/mark483/multithreading-for-websocket](https://
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/mark483/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/mark483/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/mark483/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/mark483/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/mark483/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/mark483/repo/stargazers
+[contributors-shield]: https://img.shields.io/github/contributors/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
+[contributors-url]: https://github.com/mark483/kite-multithreading-for-websocket/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
+[forks-url]: https://github.com/mark483/kite-multithreading-for-websocket/network/members
+[stars-shield]: https://img.shields.io/github/stars/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
+[stars-url]: https://github.com/mark483/kite-multithreading-for-websocket/stargazers
 [issues-shield]: https://img.shields.io/github/issues/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
 [issues-url]: https://github.com/mark483/kite-multithreading-for-websocket/issues
 [license-shield]: https://img.shields.io/github/license/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
