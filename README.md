@@ -63,7 +63,13 @@
 
 This is a python client for kite trade using a set of REST-like APIs that expose many capabilities required to build a complete investment and trading platform. Execute orders in real time, stream live market data (WebSockets), and more.
 
+The project retrieves a list of 3000 instrument tokens which is the maximum allowed for a single connection.
 
+The client starts receiving ticks on the main thread which inserts them in a queue for worker threads to fetch from.
+
+Worker threads fetch responses from global queue and start performing analysis.
+
+The output is a list of top 10 traded stocks sorted by traded_price rocp and traded_value average.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -73,10 +79,17 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+* python 3.6+
   ```sh
-  npm install npm@latest -g
+  https://www.python.org/downloads/
   ```
+* Environment Variables
+
+You need to provide your own .env file in the root directory that contains your Kite credentials such as KITE_API_KEY,KITE_API_SECRET_KEY ,etc...
+
+*Flask model
+
+You need to provide a flask model to run your server,note that currently server runs on localhost
 
 ### Installation
 
@@ -84,19 +97,22 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/mark483/multithreading-for-websocket.git
    ```
-2. Install NPM packages
+2. Install python packages
    ```sh
-   npm install
+   pip install -r requirements.txt
    ```
-
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+1. run flask server
+   ```sh
+   python app.py
+   ```
+2. Run client
+   ```sh
+   python kite_wbsk_mom.py
+   ```
 
 
 
