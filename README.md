@@ -69,8 +69,6 @@
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
 
@@ -156,24 +154,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 
 
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
-
-Project Link: [https://github.com/mark483/multithreading-for-websocket](https://github.com/mark483/multithreading-for-websocket)
-
-
-
-<!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-
-* []()
-* []()
-* []()
-
-
-
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -188,5 +168,3 @@ Project Link: [https://github.com/mark483/multithreading-for-websocket](https://
 [issues-url]: https://github.com/mark483/kite-multithreading-for-websocket/issues
 [license-shield]: https://img.shields.io/github/license/mark483/kite-multithreading-for-websocket.svg?style=for-the-badge
 [license-url]: https://github.com/mark483/kite-multithreading-for-websocket/blob/main/LICENSE
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/mark-fouad-yassa
